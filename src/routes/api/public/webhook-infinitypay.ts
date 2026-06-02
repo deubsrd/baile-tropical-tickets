@@ -66,37 +66,8 @@ export const Route = createFileRoute("/api/public/webhook-infinitypay")({
             .eq("id", order.id);
           if (uErr) throw new Error(uErr.message);
 
-          // Fetch tickets (adults only for the email)
-          const { data: tickets } = await supabaseAdmin
-            .from("tickets")
-            .select("id, participant_name, military_rank, participant_type, is_child")
-            .eq("order_id", order.id)
-            .eq("is_child", false);
+          // Pagamento confirmado — dados ficam disponíveis no painel admin.
 
-          // Send email
-          try {
-            const { renderTicketEmail, sendEmailViaResend } = await import("@/lib/email.server");
-            const html = renderTicketEmail({
-              buyerName: order.buyer_name,
-              buyerEmail: order.buyer_email,
-              orderId: order.id,
-              totalCents: order.total_amount,
-              tickets: (tickets ?? []).map((t) => ({
-                id: t.id,
-                name: t.participant_name,
-                rank: t.military_rank,
-                type: t.participant_type as "military" | "civil",
-              })),
-            });
-            await sendEmailViaResend({
-              to: order.buyer_email,
-              subject: "🌺 Seus ingressos — Baile do Havaí | 04 de Julho",
-              html,
-            });
-          } catch (e) {
-            console.error("webhook-infinitypay: email failed", e);
-            // Don't fail the webhook — payment is confirmed
-          }
 
           return new Response("ok", { status: 200 });
         } catch (e) {
