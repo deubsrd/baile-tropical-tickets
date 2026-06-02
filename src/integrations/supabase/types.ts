@@ -14,16 +14,161 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      event_config: {
+        Row: {
+          id: string
+          sales_frozen: boolean
+          ticket_limit: number
+          updated_at: string
+        }
+        Insert: {
+          id?: string
+          sales_frozen?: boolean
+          ticket_limit?: number
+          updated_at?: string
+        }
+        Update: {
+          id?: string
+          sales_frozen?: boolean
+          ticket_limit?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      orders: {
+        Row: {
+          buyer_cpf: string
+          buyer_email: string
+          buyer_name: string
+          buyer_phone: string
+          confirmed_at: string | null
+          created_at: string
+          id: string
+          infinitypay_order_nsu: string | null
+          payment_method: string | null
+          payment_url: string | null
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          buyer_cpf: string
+          buyer_email: string
+          buyer_name: string
+          buyer_phone: string
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          infinitypay_order_nsu?: string | null
+          payment_method?: string | null
+          payment_url?: string | null
+          status?: string
+          total_amount: number
+        }
+        Update: {
+          buyer_cpf?: string
+          buyer_email?: string
+          buyer_name?: string
+          buyer_phone?: string
+          confirmed_at?: string | null
+          created_at?: string
+          id?: string
+          infinitypay_order_nsu?: string | null
+          payment_method?: string | null
+          payment_url?: string | null
+          status?: string
+          total_amount?: number
+        }
+        Relationships: []
+      }
+      tickets: {
+        Row: {
+          amount: number
+          created_at: string
+          id: string
+          is_child: boolean
+          military_rank: string | null
+          order_id: string
+          participant_birthdate: string
+          participant_cpf: string
+          participant_email: string
+          participant_name: string
+          participant_phone: string
+          participant_type: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          id?: string
+          is_child?: boolean
+          military_rank?: string | null
+          order_id: string
+          participant_birthdate: string
+          participant_cpf: string
+          participant_email: string
+          participant_name: string
+          participant_phone: string
+          participant_type: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          id?: string
+          is_child?: boolean
+          military_rank?: string | null
+          order_id?: string
+          participant_birthdate?: string
+          participant_cpf?: string
+          participant_email?: string
+          participant_name?: string
+          participant_phone?: string
+          participant_type?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "tickets_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      app_role: "admin"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +295,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      app_role: ["admin"],
+    },
   },
 } as const
