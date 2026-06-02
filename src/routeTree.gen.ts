@@ -10,33 +10,44 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ApiPublicWebhookInfinitypayRouteImport } from './routes/api/public/webhook-infinitypay'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicWebhookInfinitypayRoute =
+  ApiPublicWebhookInfinitypayRouteImport.update({
+    id: '/api/public/webhook-infinitypay',
+    path: '/api/public/webhook-infinitypay',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/api/public/webhook-infinitypay': typeof ApiPublicWebhookInfinitypayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/api/public/webhook-infinitypay': typeof ApiPublicWebhookInfinitypayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/api/public/webhook-infinitypay': typeof ApiPublicWebhookInfinitypayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/api/public/webhook-infinitypay'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/api/public/webhook-infinitypay'
+  id: '__root__' | '/' | '/api/public/webhook-infinitypay'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  ApiPublicWebhookInfinitypayRoute: typeof ApiPublicWebhookInfinitypayRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,12 +59,30 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/webhook-infinitypay': {
+      id: '/api/public/webhook-infinitypay'
+      path: '/api/public/webhook-infinitypay'
+      fullPath: '/api/public/webhook-infinitypay'
+      preLoaderRoute: typeof ApiPublicWebhookInfinitypayRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  ApiPublicWebhookInfinitypayRoute: ApiPublicWebhookInfinitypayRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
