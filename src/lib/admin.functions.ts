@@ -78,7 +78,9 @@ export const updateEventConfig = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: cfg } = await supabaseAdmin.from("event_config").select("id").limit(1).maybeSingle();
     if (!cfg) throw new Error("Configuração não encontrada.");
-    const patch: Record<string, unknown> = { updated_at: new Date().toISOString() };
+    const patch: { updated_at: string; ticket_limit?: number; sales_frozen?: boolean } = {
+      updated_at: new Date().toISOString(),
+    };
     if (data.ticket_limit !== undefined) patch.ticket_limit = data.ticket_limit;
     if (data.sales_frozen !== undefined) patch.sales_frozen = data.sales_frozen;
     const { error } = await supabaseAdmin.from("event_config").update(patch).eq("id", cfg.id);

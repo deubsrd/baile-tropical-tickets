@@ -1,5 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestURL } from "@tanstack/react-start/server";
+import { getRequestUrl } from "@tanstack/react-start/server";
 import { z } from "zod";
 
 const ParticipantSchema = z.object({
@@ -115,7 +115,7 @@ export const createOrder = createServerFn({ method: "POST" })
     const handle = process.env.INFINITYPAY_HANDLE;
     if (!handle) throw new Error("INFINITYPAY_HANDLE not configured");
 
-    const origin = new URL(getRequestURL()).origin;
+    const origin = new URL(getRequestUrl()).origin;
 
     const { url } = await createInfinityPayLink({
       handle,
