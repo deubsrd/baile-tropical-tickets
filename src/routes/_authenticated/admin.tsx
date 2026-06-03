@@ -86,6 +86,18 @@ function AdminPage() {
     }
   };
 
+  const handleDelete = async (ticketId: string, name: string) => {
+    if (!confirm(`Excluir ingresso de ${name}? Esta ação não pode ser desfeita.`)) return;
+    try {
+      await deleteFn({ data: { ticketId } });
+      toast.success("Ingresso excluído");
+      qc.invalidateQueries({ queryKey: ["admin-tickets"] });
+      qc.invalidateQueries({ queryKey: ["admin-dash"] });
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
+  };
+
   const logout = async () => {
     await supabase.auth.signOut();
     window.location.href = "/admin/login";
