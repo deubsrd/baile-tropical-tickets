@@ -9,6 +9,7 @@ import { createOrder } from "@/lib/orders.functions";
 type Participant = {
   name: string;
   cpf: string;
+  email: string;
   phone: string;
   birthdate: string;
   type: "military" | "civil";
@@ -18,6 +19,7 @@ type Participant = {
 const emptyParticipant = (): Participant => ({
   name: "",
   cpf: "",
+  email: "",
   phone: "",
   birthdate: "",
   type: "civil",
