@@ -183,7 +183,7 @@ function AdminPage() {
         <table className="w-full text-sm">
           <thead className="bg-muted text-sand">
             <tr>
-              {["Nome", "Tipo", "Posto", "CPF", "Email", "Telefone", "Nasc.", "Valor", "Status", "Compra"].map((h) => (
+              {["Nome", "Tipo", "Posto", "CPF", "Email", "Telefone", "Nasc.", "Valor", "Status", "Compra", "Ações"].map((h) => (
                 <th key={h} className="text-left px-3 py-2 whitespace-nowrap">{h}</th>
               ))}
             </tr>
