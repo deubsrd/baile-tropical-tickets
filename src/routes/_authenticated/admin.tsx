@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { getAdminDashboard, listAllTickets, updateEventConfig } from "@/lib/admin.functions";
+import { getAdminDashboard, listAllTickets, updateEventConfig, deleteTicket } from "@/lib/admin.functions";
 import { formatBRL } from "@/lib/event";
 import { maskCPFForDisplay } from "@/lib/cpf";
 
