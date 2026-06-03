@@ -300,7 +300,7 @@ function ParticipantCard({
         onChange={(v) => onChange({ cpf: maskCPF(v) })}
         error={p.cpf && !isValidCPF(p.cpf) ? "CPF inválido" : ""}
       />
-      <Input label="Email" type="email" value={p.email} onChange={(v) => onChange({ email: v })} />
+      
       <Input label="WhatsApp" value={p.phone} onChange={(v) => onChange({ phone: maskPhone(v) })} />
       <Input label="Data de nascimento" type="date" value={p.birthdate} onChange={(v) => onChange({ birthdate: v })} />
 
