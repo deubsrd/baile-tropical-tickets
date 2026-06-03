@@ -17,6 +17,7 @@ function AdminPage() {
   const dashFn = useServerFn(getAdminDashboard);
   const ticketsFn = useServerFn(listAllTickets);
   const updateFn = useServerFn(updateEventConfig);
+  const deleteFn = useServerFn(deleteTicket);
   const qc = useQueryClient();
 
   const dash = useQuery({ queryKey: ["admin-dash"], queryFn: () => dashFn() });
