@@ -56,7 +56,7 @@ function ComprarPage() {
   const isParticipantValid = (p: Participant) =>
     p.name.trim().length >= 2 &&
     isValidCPF(p.cpf) &&
-    /^\S+@\S+\.\S+$/.test(p.email) &&
+    
     onlyDigits(p.phone).length >= 10 &&
     p.birthdate &&
     (p.type === "civil" || (p.type === "military" && p.rank));
