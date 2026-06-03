@@ -125,7 +125,23 @@ function Index() {
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="grid md:grid-cols-2 gap-6">
           <InfoCard icon="📅" title="DATA" lines={[EVENT.dateLabel, `às ${EVENT.timeLabel}`]} delay="delay-100" />
-          <InfoCard icon="📍" title="LOCAL" lines={[EVENT.venue, EVENT.address]} delay="delay-200" />
+          <InfoCard
+            icon="📍"
+            title="LOCAL"
+            lines={[
+              EVENT.venue,
+              <a
+                key="addr"
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(EVENT.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-gold transition-colors"
+              >
+                {EVENT.address}
+              </a>,
+            ]}
+            delay="delay-200"
+          />
           <InfoCard icon="👔" title="DRESS CODE" lines={[EVENT.dressCode]} delay="delay-300" />
           <InfoCard
             icon="🎟️"
