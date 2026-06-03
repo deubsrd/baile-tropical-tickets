@@ -208,11 +208,19 @@ function AdminPage() {
                     }`}>{status}</span>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">{new Date(t.created_at).toLocaleString("pt-BR")}</td>
+                  <td className="px-3 py-2">
+                    <button
+                      onClick={() => handleDelete(t.id, t.participant_name)}
+                      className="bg-destructive/20 text-destructive hover:bg-destructive/30 px-2 py-1 rounded text-xs"
+                    >
+                      🗑️ Excluir
+                    </button>
+                  </td>
                 </tr>
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={10} className="text-center py-8 text-sand/60">Nenhum registro</td></tr>
+              <tr><td colSpan={11} className="text-center py-8 text-sand/60">Nenhum registro</td></tr>
             )}
           </tbody>
         </table>
