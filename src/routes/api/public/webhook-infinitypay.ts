@@ -9,23 +9,57 @@ export const Route = createFileRoute("/api/public/webhook-infinitypay")({
           let payload: Record<string, unknown> = {};
           try { payload = JSON.parse(bodyText); } catch { /* try formdata */ }
 
-          // Try common field names from InfinityPay payloads
+          // InfinityPay também pode enviar via querystring
+          const url = new URL(request.url);
+          const qp: Record<string, string> = Object.fromEntries(url.searchParams.entries());
+
+          console.log(
+            "webhook-infinitypay received — body:",
+            bodyText.slice(0, 1000),
+            "query:",
+            JSON.stringify(qp),
+          );
+
+          const invoice = (payload.invoice ?? {}) as Record<string, unknown>;
+          const dataField = (payload.data ?? {}) as Record<string, unknown>;
+
           const orderNsu =
             (payload.order_nsu as string) ||
             (payload.nsu as string) ||
-            ((payload.invoice as { order_nsu?: string } | undefined)?.order_nsu) ||
-            ((payload.data as { order_nsu?: string } | undefined)?.order_nsu) ||
+            (invoice.order_nsu as string) ||
+            (dataField.order_nsu as string) ||
+            qp.order_nsu ||
             "";
 
+          const statusStr = (
+            (payload.status as string) ||
+            (invoice.status as string) ||
+            (dataField.status as string) ||
+            ""
+          ).toLowerCase();
+
+          const hasReceipt = !!(
+            payload.receipt_url ||
+            payload.transaction_id ||
+            payload.transaction_nsu ||
+            invoice.receipt_url ||
+            dataField.receipt_url ||
+            qp.receipt_url ||
+            qp.transaction_id ||
+            qp.transaction_nsu
+          );
+
+          // Considera pago se: campo explicito, status conhecido, ou veio recibo/transação
           const paid =
-            (payload.paid as boolean) ??
-            ((payload.status as string) === "paid" || (payload.status as string) === "approved" ||
-              (payload.status as string) === "confirmed") ??
-            true;
+            payload.paid === true ||
+            ["paid", "approved", "confirmed", "succeeded", "success"].includes(statusStr) ||
+            hasReceipt;
 
           const paymentMethod =
             (payload.payment_method as string) ||
-            ((payload.invoice as { payment_method?: string } | undefined)?.payment_method) ||
+            (payload.capture_method as string) ||
+            (invoice.payment_method as string) ||
+            qp.capture_method ||
             null;
 
           if (!orderNsu) {
