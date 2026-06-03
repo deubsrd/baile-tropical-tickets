@@ -115,7 +115,7 @@ export const createOrder = createServerFn({ method: "POST" })
     const handle = process.env.INFINITYPAY_HANDLE;
     if (!handle) throw new Error("INFINITYPAY_HANDLE not configured");
 
-    const siteUrl = process.env.VITE_SITE_URL;
+    const siteUrl = import.meta.env.VITE_SITE_URL || process.env.VITE_SITE_URL;
     if (!siteUrl) throw new Error("VITE_SITE_URL not configured");
 
     const { url } = await createInfinityPayLink({
