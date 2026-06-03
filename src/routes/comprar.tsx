@@ -54,6 +54,7 @@ function ComprarPage() {
   const isParticipantValid = (p: Participant) =>
     p.name.trim().length >= 2 &&
     isValidCPF(p.cpf) &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email.trim()) &&
     onlyDigits(p.phone).length >= 10 &&
     p.birthdate &&
     (p.type === "civil" || (p.type === "military" && p.rank));
@@ -71,6 +72,7 @@ function ComprarPage() {
           participants: participants.map((p) => ({
             name: p.name.trim(),
             cpf: onlyDigits(p.cpf),
+            email: p.email.trim(),
             phone: onlyDigits(p.phone),
             birthdate: p.birthdate,
             type: p.type,
