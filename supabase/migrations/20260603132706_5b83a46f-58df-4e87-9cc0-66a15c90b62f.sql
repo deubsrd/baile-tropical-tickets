@@ -1,0 +1,1 @@
+UPDATE public.orders SET status='confirmed', confirmed_at=now(), payment_method='pix' WHERE id='98bc8b84-16d4-446a-84cb-d9f2c16664a6' AND status='pending';
