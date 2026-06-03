@@ -206,7 +206,16 @@ function Index() {
         <p className="mt-2">
           {EVENT.dateLabel} · {EVENT.venue}
         </p>
-        <p className="mt-1">{EVENT.address}</p>
+        <p className="mt-1">
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(EVENT.address)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gold transition-colors"
+          >
+            {EVENT.address}
+          </a>
+        </p>
       </footer>
     </div>
   );
