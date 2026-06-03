@@ -129,7 +129,7 @@ function Index() {
           <InfoCard
             icon="🎟️"
             title="INGRESSOS"
-            lines={["R$ 120,00 por adulto", "Crianças até 12 anos: GRÁTIS"]}
+            lines={["R$ 80,00 por adulto", "Crianças até 12 anos: GRÁTIS"]}
             delay="delay-400"
           />
         </div>
