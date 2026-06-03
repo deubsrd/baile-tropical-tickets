@@ -115,12 +115,13 @@ export const createOrder = createServerFn({ method: "POST" })
     const handle = process.env.INFINITYPAY_HANDLE;
     if (!handle) throw new Error("INFINITYPAY_HANDLE not configured");
 
-    const origin = new URL(getRequestUrl()).origin;
+    const siteUrl = process.env.VITE_SITE_URL;
+    if (!siteUrl) throw new Error("VITE_SITE_URL not configured");
 
     const { url } = await createInfinityPayLink({
       handle,
-      redirect_url: `${origin}/confirmacao?order_id=${order.id}`,
-      webhook_url: `${origin}/api/public/webhook-infinitypay`,
+      redirect_url: `${siteUrl}/confirmacao?order_id=${order.id}`,
+      webhook_url: `${siteUrl}/api/public/webhook-infinitypay`,
       order_nsu: order.id,
       totalCents,
       description: `Baile do Havaí — ${adultCount} ingresso(s) adulto(s)`,
