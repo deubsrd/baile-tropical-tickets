@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { Countdown } from "@/components/Countdown";
 import { EVENT } from "@/lib/event";
@@ -124,7 +125,23 @@ function Index() {
       <section className="max-w-5xl mx-auto px-6 py-20">
         <div className="grid md:grid-cols-2 gap-6">
           <InfoCard icon="📅" title="DATA" lines={[EVENT.dateLabel, `às ${EVENT.timeLabel}`]} delay="delay-100" />
-          <InfoCard icon="📍" title="LOCAL" lines={[EVENT.venue, EVENT.address]} delay="delay-200" />
+          <InfoCard
+            icon="📍"
+            title="LOCAL"
+            lines={[
+              EVENT.venue,
+              <a
+                key="addr"
+                href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(EVENT.address)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline hover:text-gold transition-colors"
+              >
+                {EVENT.address}
+              </a>,
+            ]}
+            delay="delay-200"
+          />
           <InfoCard icon="👔" title="DRESS CODE" lines={[EVENT.dressCode]} delay="delay-300" />
           <InfoCard
             icon="🎟️"
@@ -189,13 +206,22 @@ function Index() {
         <p className="mt-2">
           {EVENT.dateLabel} · {EVENT.venue}
         </p>
-        <p className="mt-1">{EVENT.address}</p>
+        <p className="mt-1">
+          <a
+            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(EVENT.address)}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline hover:text-gold transition-colors"
+          >
+            {EVENT.address}
+          </a>
+        </p>
       </footer>
     </div>
   );
 }
 
-function InfoCard({ icon, title, lines, delay }: { icon: string; title: string; lines: string[]; delay: string }) {
+function InfoCard({ icon, title, lines, delay }: { icon: string; title: string; lines: ReactNode[]; delay: string }) {
   return (
     <div
       className={`rounded-2xl bg-card/70 border border-border p-6 hover:border-gold/60 hover:-translate-y-1 transition-all duration-300 animate-fade-in-up ${delay}`}
