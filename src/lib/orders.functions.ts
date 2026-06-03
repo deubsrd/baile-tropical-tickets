@@ -74,14 +74,16 @@ export const createOrder = createServerFn({ method: "POST" })
       throw new Error(`Apenas ${Math.max(0, remaining)} ingressos restantes.`);
     }
 
-    // 6. Insert order
+    // 6. Insert order (buyer = first participant)
+    const buyer = enriched[0];
+    const placeholderEmail = `noreply+${buyer.cpf}@bailedohavai.local`;
     const { data: order, error: orderErr } = await supabaseAdmin
       .from("orders")
       .insert({
-        buyer_name: data.buyer.name,
-        buyer_cpf: data.buyer.cpf,
-        buyer_email: data.buyer.email,
-        buyer_phone: data.buyer.phone,
+        buyer_name: buyer.name,
+        buyer_cpf: buyer.cpf,
+        buyer_email: placeholderEmail,
+        buyer_phone: buyer.phone,
         total_amount: totalCents,
         status: "pending",
       })
@@ -94,8 +96,9 @@ export const createOrder = createServerFn({ method: "POST" })
       order_id: order.id,
       participant_name: p.name,
       participant_cpf: p.cpf,
-      participant_email: p.email,
+      participant_email: placeholderEmail,
       participant_phone: p.phone,
+
       participant_birthdate: p.birthdate,
       participant_type: p.type,
       military_rank: p.type === "military" ? p.rank : null,
