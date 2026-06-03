@@ -14,7 +14,6 @@ type Participant = {
   type: "military" | "civil";
   rank: string;
 };
-type Buyer = { name: string; cpf: string; email: string; phone: string };
 
 const emptyParticipant = (): Participant => ({
   name: "",
@@ -37,7 +36,6 @@ export const Route = createFileRoute("/comprar")({
 
 function ComprarPage() {
   const [participants, setParticipants] = useState<Participant[]>([emptyParticipant()]);
-  const [buyer, setBuyer] = useState<Buyer>({ name: "", cpf: "", email: "", phone: "" });
   const [submitting, setSubmitting] = useState(false);
   const createFn = useServerFn(createOrder);
 
@@ -61,29 +59,16 @@ function ComprarPage() {
   const validParticipants = participants.every(isParticipantValid);
   const dupCpfs = new Set(participants.map((p) => onlyDigits(p.cpf))).size !== participants.length;
 
-  const validBuyer =
-    buyer.name.trim().length >= 2 &&
-    isValidCPF(buyer.cpf) &&
-    /^\S+@\S+\.\S+$/.test(buyer.email) &&
-    onlyDigits(buyer.phone).length >= 10;
-
-  const canSubmit = validParticipants && !dupCpfs && total > 0 && validBuyer;
+  const canSubmit = validParticipants && !dupCpfs && total > 0;
 
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
       const { paymentUrl } = await createFn({
         data: {
-          buyer: {
-            name: buyer.name.trim(),
-            cpf: onlyDigits(buyer.cpf),
-            email: buyer.email.trim().toLowerCase(),
-            phone: onlyDigits(buyer.phone),
-          },
           participants: participants.map((p) => ({
             name: p.name.trim(),
             cpf: onlyDigits(p.cpf),
-            email: buyer.email.trim().toLowerCase(),
             phone: onlyDigits(p.phone),
             birthdate: p.birthdate,
             type: p.type,
@@ -140,24 +125,6 @@ function ComprarPage() {
           <span className="inline-block group-hover:rotate-90 transition-transform duration-200 mr-1">＋</span>{" "}
           Adicionar outro participante
         </button>
-
-        <div className="rounded-2xl bg-card border border-border p-6 space-y-3 animate-fade-in-up">
-          <h2 className="font-display text-2xl text-gold">DADOS DO COMPRADOR</h2>
-          <Input label="Nome completo" value={buyer.name} onChange={(v) => setBuyer({ ...buyer, name: v })} />
-          <Input
-            label="CPF"
-            value={buyer.cpf}
-            onChange={(v) => setBuyer({ ...buyer, cpf: maskCPF(v) })}
-            error={buyer.cpf && !isValidCPF(buyer.cpf) ? "CPF inválido" : ""}
-          />
-          <Input
-            label="Email"
-            type="email"
-            value={buyer.email}
-            onChange={(v) => setBuyer({ ...buyer, email: v })}
-          />
-          <Input label="WhatsApp" value={buyer.phone} onChange={(v) => setBuyer({ ...buyer, phone: maskPhone(v) })} />
-        </div>
 
         <div className="rounded-2xl bg-card border border-border p-6 animate-fade-in-up delay-100">
           <h3 className="font-display text-xl text-gold mb-3">RESUMO</h3>
