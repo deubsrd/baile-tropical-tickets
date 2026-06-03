@@ -5,6 +5,7 @@ import { z } from "zod";
 const ParticipantSchema = z.object({
   name: z.string().trim().min(2).max(120),
   cpf: z.string().regex(/^\d{11}$/),
+  email: z.string().trim().email().max(255),
   phone: z.string().regex(/^\d{10,11}$/),
   birthdate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   type: z.enum(["military", "civil"]),
@@ -76,13 +77,12 @@ export const createOrder = createServerFn({ method: "POST" })
 
     // 6. Insert order (buyer = first participant)
     const buyer = enriched[0];
-    const placeholderEmail = `noreply+${buyer.cpf}@bailedohavai.local`;
     const { data: order, error: orderErr } = await supabaseAdmin
       .from("orders")
       .insert({
         buyer_name: buyer.name,
         buyer_cpf: buyer.cpf,
-        buyer_email: placeholderEmail,
+        buyer_email: buyer.email,
         buyer_phone: buyer.phone,
         total_amount: totalCents,
         status: "pending",
@@ -96,7 +96,7 @@ export const createOrder = createServerFn({ method: "POST" })
       order_id: order.id,
       participant_name: p.name,
       participant_cpf: p.cpf,
-      participant_email: placeholderEmail,
+      participant_email: p.email,
       participant_phone: p.phone,
 
       participant_birthdate: p.birthdate,

@@ -9,6 +9,7 @@ import { createOrder } from "@/lib/orders.functions";
 type Participant = {
   name: string;
   cpf: string;
+  email: string;
   phone: string;
   birthdate: string;
   type: "military" | "civil";
@@ -18,6 +19,7 @@ type Participant = {
 const emptyParticipant = (): Participant => ({
   name: "",
   cpf: "",
+  email: "",
   phone: "",
   birthdate: "",
   type: "civil",
@@ -52,6 +54,7 @@ function ComprarPage() {
   const isParticipantValid = (p: Participant) =>
     p.name.trim().length >= 2 &&
     isValidCPF(p.cpf) &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email.trim()) &&
     onlyDigits(p.phone).length >= 10 &&
     p.birthdate &&
     (p.type === "civil" || (p.type === "military" && p.rank));
@@ -69,6 +72,7 @@ function ComprarPage() {
           participants: participants.map((p) => ({
             name: p.name.trim(),
             cpf: onlyDigits(p.cpf),
+            email: p.email.trim(),
             phone: onlyDigits(p.phone),
             birthdate: p.birthdate,
             type: p.type,
@@ -218,6 +222,13 @@ function ParticipantCard({
         error={p.cpf && !isValidCPF(p.cpf) ? "CPF inválido" : ""}
       />
 
+      <Input
+        label="E-mail"
+        type="email"
+        value={p.email}
+        onChange={(v) => onChange({ email: v })}
+        error={p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email.trim()) ? "E-mail inválido" : ""}
+      />
       <Input label="WhatsApp" value={p.phone} onChange={(v) => onChange({ phone: maskPhone(v) })} />
       <Input label="Data de nascimento" type="date" value={p.birthdate} onChange={(v) => onChange({ birthdate: v })} />
 
