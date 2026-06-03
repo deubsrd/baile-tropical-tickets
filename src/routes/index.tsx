@@ -196,7 +196,7 @@ function Index() {
   );
 }
 
-function InfoCard({ icon, title, lines, delay }: { icon: string; title: string; lines: string[]; delay: string }) {
+function InfoCard({ icon, title, lines, delay }: { icon: string; title: string; lines: ReactNode[]; delay: string }) {
   return (
     <div
       className={`rounded-2xl bg-card/70 border border-border p-6 hover:border-gold/60 hover:-translate-y-1 transition-all duration-300 animate-fade-in-up ${delay}`}
