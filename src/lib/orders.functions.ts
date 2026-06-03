@@ -5,7 +5,6 @@ import { z } from "zod";
 const ParticipantSchema = z.object({
   name: z.string().trim().min(2).max(120),
   cpf: z.string().regex(/^\d{11}$/),
-  email: z.string().trim().email().max(255),
   phone: z.string().regex(/^\d{10,11}$/),
   birthdate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   type: z.enum(["military", "civil"]),
@@ -13,14 +12,9 @@ const ParticipantSchema = z.object({
 });
 
 const CreateOrderInput = z.object({
-  buyer: z.object({
-    name: z.string().trim().min(2).max(120),
-    cpf: z.string().regex(/^\d{11}$/),
-    email: z.string().trim().email().max(255),
-    phone: z.string().regex(/^\d{10,11}$/),
-  }),
   participants: z.array(ParticipantSchema).min(1).max(20),
 });
+
 
 export const createOrder = createServerFn({ method: "POST" })
   .inputValidator((data: unknown) => CreateOrderInput.parse(data))
