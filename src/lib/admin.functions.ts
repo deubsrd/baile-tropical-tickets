@@ -87,3 +87,37 @@ export const updateEventConfig = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
+export const deleteTicket = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: unknown) =>
+    z.object({ ticketId: z.string().uuid() }).parse(data),
+  )
+  .handler(async ({ context, data }) => {
+    await ensureAdmin(context.userId);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const { data: ticket, error: tErr } = await supabaseAdmin
+      .from("tickets")
+      .select("id, order_id")
+      .eq("id", data.ticketId)
+      .maybeSingle();
+    if (tErr || !ticket) throw new Error("Ingresso não encontrado.");
+
+    const { error: delErr } = await supabaseAdmin
+      .from("tickets")
+      .delete()
+      .eq("id", data.ticketId);
+    if (delErr) throw new Error(delErr.message);
+
+    // If order has no more tickets, remove it too
+    const { count } = await supabaseAdmin
+      .from("tickets")
+      .select("id", { count: "exact", head: true })
+      .eq("order_id", ticket.order_id);
+    if (!count || count === 0) {
+      await supabaseAdmin.from("orders").delete().eq("id", ticket.order_id);
+    }
+
+    return { ok: true };
+  });

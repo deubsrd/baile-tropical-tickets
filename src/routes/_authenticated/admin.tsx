@@ -4,7 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import { getAdminDashboard, listAllTickets, updateEventConfig } from "@/lib/admin.functions";
+import { getAdminDashboard, listAllTickets, updateEventConfig, deleteTicket } from "@/lib/admin.functions";
 import { formatBRL } from "@/lib/event";
 import { maskCPFForDisplay } from "@/lib/cpf";
 
@@ -17,6 +17,7 @@ function AdminPage() {
   const dashFn = useServerFn(getAdminDashboard);
   const ticketsFn = useServerFn(listAllTickets);
   const updateFn = useServerFn(updateEventConfig);
+  const deleteFn = useServerFn(deleteTicket);
   const qc = useQueryClient();
 
   const dash = useQuery({ queryKey: ["admin-dash"], queryFn: () => dashFn() });
@@ -80,6 +81,18 @@ function AdminPage() {
       await updateFn({ data: { sales_frozen: !dash.data.frozen } });
       qc.invalidateQueries({ queryKey: ["admin-dash"] });
       qc.invalidateQueries({ queryKey: ["sales-availability"] });
+    } catch (e) {
+      toast.error((e as Error).message);
+    }
+  };
+
+  const handleDelete = async (ticketId: string, name: string) => {
+    if (!confirm(`Excluir ingresso de ${name}? Esta ação não pode ser desfeita.`)) return;
+    try {
+      await deleteFn({ data: { ticketId } });
+      toast.success("Ingresso excluído");
+      qc.invalidateQueries({ queryKey: ["admin-tickets"] });
+      qc.invalidateQueries({ queryKey: ["admin-dash"] });
     } catch (e) {
       toast.error((e as Error).message);
     }
@@ -170,7 +183,7 @@ function AdminPage() {
         <table className="w-full text-sm">
           <thead className="bg-muted text-sand">
             <tr>
-              {["Nome", "Tipo", "Posto", "CPF", "Email", "Telefone", "Nasc.", "Valor", "Status", "Compra"].map((h) => (
+              {["Nome", "Tipo", "Posto", "CPF", "Email", "Telefone", "Nasc.", "Valor", "Status", "Compra", "Ações"].map((h) => (
                 <th key={h} className="text-left px-3 py-2 whitespace-nowrap">{h}</th>
               ))}
             </tr>
@@ -195,11 +208,19 @@ function AdminPage() {
                     }`}>{status}</span>
                   </td>
                   <td className="px-3 py-2 whitespace-nowrap">{new Date(t.created_at).toLocaleString("pt-BR")}</td>
+                  <td className="px-3 py-2">
+                    <button
+                      onClick={() => handleDelete(t.id, t.participant_name)}
+                      className="bg-destructive/20 text-destructive hover:bg-destructive/30 px-2 py-1 rounded text-xs"
+                    >
+                      🗑️ Excluir
+                    </button>
+                  </td>
                 </tr>
               );
             })}
             {filtered.length === 0 && (
-              <tr><td colSpan={10} className="text-center py-8 text-sand/60">Nenhum registro</td></tr>
+              <tr><td colSpan={11} className="text-center py-8 text-sand/60">Nenhum registro</td></tr>
             )}
           </tbody>
         </table>
