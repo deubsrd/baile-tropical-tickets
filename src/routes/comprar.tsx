@@ -111,7 +111,7 @@ function ComprarPage() {
         COMPRAR INGRESSOS
       </h1>
       <p className="text-sand mt-2 animate-fade-in-up delay-100">
-        R$ 120,00 por adulto · Crianças até 12 anos: gratuito
+        R$ 80,00 por adulto · Crianças até 12 anos: gratuito
       </p>
 
       {/* Stepper visual */}
@@ -179,7 +179,7 @@ function ComprarPage() {
               error={buyer.cpf && !isValidCPF(buyer.cpf) ? "CPF inválido" : ""}
             />
             <Input
-              label="Email (receberá os ingressos)"
+              label="Email (confirmação do pedido)"
               type="email"
               value={buyer.email}
               onChange={(v) => setBuyer({ ...buyer, email: v })}

@@ -81,7 +81,7 @@ function Confirmacao() {
             PAGAMENTO CONFIRMADO!
           </h1>
           <p className="text-sand mt-4 text-lg animate-fade-in-up delay-100">
-            Seus ingressos foram enviados para <strong className="text-gold">{data.buyer_email}</strong>
+            Basta apresentar seu nome na recepção no dia do evento.
           </p>
           <div className="mt-8 rounded-2xl bg-card border border-tropical p-6 inline-block animate-fade-in-up delay-200 animate-pulse-glow">
             <div className="text-sm text-sand">Total pago</div>
@@ -121,7 +121,7 @@ function Confirmacao() {
       <div className="text-6xl mb-4 animate-spin-slow inline-block">⏳</div>
       <h1 className="font-display text-4xl text-gold mt-4">Aguardando confirmação...</h1>
       <p className="text-sand mt-4">
-        Assim que o pagamento for processado, os ingressos serão enviados para o seu email automaticamente.
+        Assim que o pagamento for confirmado, seu nome será liberado na lista de entrada.
       </p>
       {/* barra de progresso indeterminada */}
       <div className="mt-8 h-1 rounded-full overflow-hidden bg-muted">
