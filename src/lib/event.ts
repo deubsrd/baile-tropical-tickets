@@ -6,7 +6,7 @@ export const EVENT = {
   venue: "COB — Círculo de Oficiais de Boa Vista",
   address: "Av. Capitão Ene Garcez, 1452 - São Francisco, Boa Vista - RR, 69305-135",
   dressCode: "Traje Tropical / Havaiano",
-  ticketPriceCents: 12000, // R$ 120,00
+  ticketPriceCents: 8000, // R$ 80,00
   childMaxAge: 12,
 };
 
