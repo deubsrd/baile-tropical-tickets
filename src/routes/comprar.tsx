@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -36,12 +36,10 @@ export const Route = createFileRoute("/comprar")({
 });
 
 function ComprarPage() {
-  const [step, setStep] = useState<1 | 2>(1);
   const [participants, setParticipants] = useState<Participant[]>([emptyParticipant()]);
   const [buyer, setBuyer] = useState<Buyer>({ name: "", cpf: "", email: "", phone: "" });
   const [submitting, setSubmitting] = useState(false);
   const createFn = useServerFn(createOrder);
-  const navigate = useNavigate();
 
   const updateP = (i: number, patch: Partial<Participant>) =>
     setParticipants((arr) => arr.map((p, j) => (j === i ? { ...p, ...patch } : p)));
@@ -56,7 +54,6 @@ function ComprarPage() {
   const isParticipantValid = (p: Participant) =>
     p.name.trim().length >= 2 &&
     isValidCPF(p.cpf) &&
-    
     onlyDigits(p.phone).length >= 10 &&
     p.birthdate &&
     (p.type === "civil" || (p.type === "military" && p.rank));
@@ -69,6 +66,8 @@ function ComprarPage() {
     isValidCPF(buyer.cpf) &&
     /^\S+@\S+\.\S+$/.test(buyer.email) &&
     onlyDigits(buyer.phone).length >= 10;
+
+  const canSubmit = validParticipants && !dupCpfs && total > 0 && validBuyer;
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -114,132 +113,83 @@ function ComprarPage() {
         R$ 80,00 por adulto · Crianças até 12 anos: gratuito
       </p>
 
-      {/* Stepper visual */}
-      <div className="flex items-center gap-0 mt-8 mb-8 animate-fade-in-up delay-200">
-        <StepItem number={1} label="Participantes" icon="👥" active={step >= 1} />
-        <div className={`flex-1 h-px mx-2 ${step >= 2 ? "bg-gold" : "bg-border"} transition-colors duration-500`} />
-        <StepItem number={2} label="Comprador" icon="🧾" active={step >= 2} />
-      </div>
+      <div className="space-y-4 mt-8">
+        {participants.map((p, i) => (
+          <ParticipantCard
+            key={i}
+            index={i}
+            p={p}
+            price={priceOf(p)}
+            valid={!!isParticipantValid(p)}
+            canRemove={participants.length > 1}
+            onChange={(patch) => updateP(i, patch)}
+            onRemove={() => removeP(i)}
+          />
+        ))}
 
-      {step === 1 && (
-        <div className="space-y-4">
-          {participants.map((p, i) => (
-            <ParticipantCard
-              key={i}
-              index={i}
-              p={p}
-              price={priceOf(p)}
-              valid={!!isParticipantValid(p)}
-              canRemove={participants.length > 1}
-              onChange={(patch) => updateP(i, patch)}
-              onRemove={() => removeP(i)}
-            />
-          ))}
+        {dupCpfs && (
+          <div className="rounded-lg bg-destructive/20 border border-destructive p-3 text-destructive-foreground text-sm">
+            CPFs duplicados não são permitidos no mesmo pedido.
+          </div>
+        )}
 
-          {dupCpfs && (
-            <div className="rounded-lg bg-destructive/20 border border-destructive p-3 text-destructive-foreground text-sm">
-              CPFs duplicados não são permitidos no mesmo pedido.
-            </div>
+        <button
+          onClick={addP}
+          className="w-full rounded-xl border-2 border-dashed border-gold/50 text-gold py-4 hover:bg-gold/10 hover:border-gold transition-all duration-200 group"
+        >
+          <span className="inline-block group-hover:rotate-90 transition-transform duration-200 mr-1">＋</span>{" "}
+          Adicionar outro participante
+        </button>
+
+        <div className="rounded-2xl bg-card border border-border p-6 space-y-3 animate-fade-in-up">
+          <h2 className="font-display text-2xl text-gold">DADOS DO COMPRADOR</h2>
+          <Input label="Nome completo" value={buyer.name} onChange={(v) => setBuyer({ ...buyer, name: v })} />
+          <Input
+            label="CPF"
+            value={buyer.cpf}
+            onChange={(v) => setBuyer({ ...buyer, cpf: maskCPF(v) })}
+            error={buyer.cpf && !isValidCPF(buyer.cpf) ? "CPF inválido" : ""}
+          />
+          <Input
+            label="Email"
+            type="email"
+            value={buyer.email}
+            onChange={(v) => setBuyer({ ...buyer, email: v })}
+          />
+          <Input label="WhatsApp" value={buyer.phone} onChange={(v) => setBuyer({ ...buyer, phone: maskPhone(v) })} />
+        </div>
+
+        <div className="rounded-2xl bg-card border border-border p-6 animate-fade-in-up delay-100">
+          <h3 className="font-display text-xl text-gold mb-3">RESUMO</h3>
+          <ul className="space-y-2 text-sm">
+            {participants.map((p, i) => (
+              <li key={i} className="flex justify-between items-center">
+                <span>{p.name || `Participante ${i + 1}`}</span>
+                <PriceBadge price={priceOf(p)} />
+              </li>
+            ))}
+          </ul>
+          <div className="border-t border-border mt-4 pt-4 flex justify-between text-lg">
+            <span>Total</span>
+            <span className="font-display text-3xl text-gold">{formatBRL(total)}</span>
+          </div>
+        </div>
+
+        <button
+          onClick={handleSubmit}
+          disabled={!canSubmit || submitting}
+          className="w-full bg-gradient-tropical text-tropical-foreground font-display tracking-wider text-xl py-4 rounded-xl disabled:opacity-40 shadow-tropical hover:opacity-90 hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2"
+        >
+          {submitting ? (
+            <>
+              <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
+              Processando...
+            </>
+          ) : (
+            "Ir para pagamento →"
           )}
-
-          <button
-            onClick={addP}
-            className="w-full rounded-xl border-2 border-dashed border-gold/50 text-gold py-4 hover:bg-gold/10 hover:border-gold transition-all duration-200 group"
-          >
-            <span className="inline-block group-hover:rotate-90 transition-transform duration-200 mr-1">＋</span>{" "}
-            Adicionar outro participante
-          </button>
-
-          <div className="rounded-2xl bg-card border border-border p-6 mt-6">
-            <div className="flex justify-between text-lg">
-              <span>Total</span>
-              <span className="font-display text-3xl text-gold">{formatBRL(total)}</span>
-            </div>
-          </div>
-
-          <button
-            disabled={!validParticipants || dupCpfs || total === 0}
-            onClick={() => setStep(2)}
-            className="w-full bg-gradient-tropical text-tropical-foreground font-display tracking-wider text-xl py-4 rounded-xl disabled:opacity-40 shadow-tropical hover:opacity-90 hover:shadow-glow transition-all duration-200"
-          >
-            Continuar →
-          </button>
-        </div>
-      )}
-
-      {step === 2 && (
-        <div className="space-y-4 animate-fade-in-up">
-          <div className="rounded-2xl bg-card border border-border p-6 space-y-3">
-            <h2 className="font-display text-2xl text-gold">DADOS DO COMPRADOR</h2>
-            <Input label="Nome completo" value={buyer.name} onChange={(v) => setBuyer({ ...buyer, name: v })} />
-            <Input
-              label="CPF"
-              value={buyer.cpf}
-              onChange={(v) => setBuyer({ ...buyer, cpf: maskCPF(v) })}
-              error={buyer.cpf && !isValidCPF(buyer.cpf) ? "CPF inválido" : ""}
-            />
-            <Input
-              label="Email (confirmação do pedido)"
-              type="email"
-              value={buyer.email}
-              onChange={(v) => setBuyer({ ...buyer, email: v })}
-            />
-            <Input label="WhatsApp" value={buyer.phone} onChange={(v) => setBuyer({ ...buyer, phone: maskPhone(v) })} />
-          </div>
-
-          <div className="rounded-2xl bg-card border border-border p-6">
-            <h3 className="font-display text-xl text-gold mb-3">RESUMO</h3>
-            <ul className="space-y-2 text-sm">
-              {participants.map((p, i) => (
-                <li key={i} className="flex justify-between items-center">
-                  <span>{p.name || `Participante ${i + 1}`}</span>
-                  <PriceBadge price={priceOf(p)} />
-                </li>
-              ))}
-            </ul>
-            <div className="border-t border-border mt-4 pt-4 flex justify-between text-lg">
-              <span>Total</span>
-              <span className="font-display text-3xl text-gold">{formatBRL(total)}</span>
-            </div>
-          </div>
-
-          <div className="flex gap-3">
-            <button
-              onClick={() => setStep(1)}
-              className="px-6 py-3 rounded-xl border border-border hover:border-gold/40 transition-colors"
-            >
-              ← Voltar
-            </button>
-            <button
-              onClick={handleSubmit}
-              disabled={!validBuyer || submitting}
-              className="flex-1 bg-gradient-tropical text-tropical-foreground font-display tracking-wider text-xl py-4 rounded-xl disabled:opacity-40 shadow-tropical hover:opacity-90 hover:shadow-glow transition-all duration-200 flex items-center justify-center gap-2"
-            >
-              {submitting ? (
-                <>
-                  <span className="inline-block w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  Processando...
-                </>
-              ) : (
-                "Ir para pagamento →"
-              )}
-            </button>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
-
-function StepItem({ number, label, icon, active }: { number: number; label: string; icon: string; active: boolean }) {
-  return (
-    <div className={`flex items-center gap-2 transition-all duration-300 ${active ? "text-gold" : "text-sand/40"}`}>
-      <div
-        className={`w-8 h-8 rounded-full border-2 flex items-center justify-center text-sm font-display transition-all duration-300 ${active ? "border-gold bg-gold/20" : "border-border"}`}
-      >
-        {icon}
+        </button>
       </div>
-      <span className="text-sm font-display tracking-wider hidden sm:block">{label}</span>
     </div>
   );
 }
@@ -300,7 +250,7 @@ function ParticipantCard({
         onChange={(v) => onChange({ cpf: maskCPF(v) })}
         error={p.cpf && !isValidCPF(p.cpf) ? "CPF inválido" : ""}
       />
-      
+
       <Input label="WhatsApp" value={p.phone} onChange={(v) => onChange({ phone: maskPhone(v) })} />
       <Input label="Data de nascimento" type="date" value={p.birthdate} onChange={(v) => onChange({ birthdate: v })} />
 
