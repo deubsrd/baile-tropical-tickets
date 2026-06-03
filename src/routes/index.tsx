@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import type { ReactNode } from "react";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { Countdown } from "@/components/Countdown";
 import { EVENT } from "@/lib/event";
