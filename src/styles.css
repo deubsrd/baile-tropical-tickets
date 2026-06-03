@@ -51,7 +51,7 @@
   --radius: 0.75rem;
 
   /* Tropical night palette */
-  --background: oklch(0.18 0.05 265);            /* #0D1B2A deep night blue */
+  --background: oklch(0.18 0.05 265); /* #0D1B2A deep night blue */
   --foreground: oklch(0.97 0.02 90);
 
   --card: oklch(0.23 0.06 270);
@@ -65,13 +65,13 @@
   --primary-foreground: oklch(0.98 0.01 90);
 
   /* Secondary = sand / wood */
-  --secondary: oklch(0.78 0.06 75);              /* #C8A882 */
+  --secondary: oklch(0.78 0.06 75); /* #C8A882 */
   --secondary-foreground: oklch(0.22 0.05 60);
 
   --muted: oklch(0.28 0.04 265);
   --muted-foreground: oklch(0.75 0.03 90);
 
-  --accent: oklch(0.78 0.16 75);                 /* #F5A623 gold */
+  --accent: oklch(0.78 0.16 75); /* #F5A623 gold */
   --accent-foreground: oklch(0.2 0.05 70);
 
   --destructive: oklch(0.6 0.22 25);
@@ -82,23 +82,23 @@
   --ring: oklch(0.78 0.16 75);
 
   /* Custom brand tokens */
-  --gold: oklch(0.78 0.16 75);                   /* #F5A623 */
+  --gold: oklch(0.78 0.16 75); /* #F5A623 */
   --gold-foreground: oklch(0.2 0.05 70);
 
-  --tropical: oklch(0.52 0.13 155);              /* #1A6B4A */
+  --tropical: oklch(0.52 0.13 155); /* #1A6B4A */
   --tropical-foreground: oklch(0.98 0.01 90);
 
-  --hibiscus: oklch(0.65 0.22 5);                /* #E8426A */
+  --hibiscus: oklch(0.65 0.22 5); /* #E8426A */
   --hibiscus-foreground: oklch(0.98 0.01 90);
 
-  --sand: oklch(0.78 0.06 75);                   /* #C8A882 */
+  --sand: oklch(0.78 0.06 75); /* #C8A882 */
   --sand-foreground: oklch(0.22 0.05 60);
 
   /* Gradients & shadows */
-  --gradient-night: linear-gradient(180deg, #0D1B2A 0%, #1a1140 100%);
+  --gradient-night: linear-gradient(180deg, #0d1b2a 0%, #1a1140 100%);
   --gradient-tropical: linear-gradient(135deg, oklch(0.52 0.13 155) 0%, oklch(0.45 0.12 180) 100%);
-  --gradient-gold: linear-gradient(135deg, #F5A623 0%, #ffcd60 100%);
-  --gradient-sunset: linear-gradient(135deg, #E8426A 0%, #F5A623 100%);
+  --gradient-gold: linear-gradient(135deg, #f5a623 0%, #ffcd60 100%);
+  --gradient-sunset: linear-gradient(135deg, #e8426a 0%, #f5a623 100%);
 
   --shadow-tropical: 0 20px 50px -10px oklch(0.4 0.12 155 / 0.4);
   --shadow-gold: 0 10px 40px -10px oklch(0.78 0.16 75 / 0.5);
@@ -123,19 +123,38 @@
     color: var(--color-foreground);
     min-height: 100vh;
   }
-  h1, h2, h3, .font-display {
+  h1,
+  h2,
+  h3,
+  .font-display {
     font-family: var(--font-display);
     letter-spacing: 0.02em;
   }
 }
 
 @layer utilities {
-  .bg-gradient-night { background: var(--gradient-night); }
-  .bg-gradient-tropical { background: var(--gradient-tropical); }
-  .bg-gradient-gold { background: var(--gradient-gold); }
-  .bg-gradient-sunset { background: var(--gradient-sunset); }
-  .shadow-tropical { box-shadow: var(--shadow-tropical); }
-  .shadow-gold { box-shadow: var(--shadow-gold); }
-  .shadow-glow { box-shadow: var(--shadow-glow); }
-  .text-balance { text-wrap: balance; }
+  .bg-gradient-night {
+    background: var(--gradient-night);
+  }
+  .bg-gradient-tropical {
+    background: var(--gradient-tropical);
+  }
+  .bg-gradient-gold {
+    background: var(--gradient-gold);
+  }
+  .bg-gradient-sunset {
+    background: var(--gradient-sunset);
+  }
+  .shadow-tropical {
+    box-shadow: var(--shadow-tropical);
+  }
+  .shadow-gold {
+    box-shadow: var(--shadow-gold);
+  }
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+  .text-balance {
+    text-wrap: balance;
+  }
 }
