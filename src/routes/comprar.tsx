@@ -84,7 +84,7 @@ function ComprarPage() {
           participants: participants.map((p) => ({
             name: p.name.trim(),
             cpf: onlyDigits(p.cpf),
-            email: p.email.trim().toLowerCase(),
+            email: buyer.email.trim().toLowerCase(),
             phone: onlyDigits(p.phone),
             birthdate: p.birthdate,
             type: p.type,
