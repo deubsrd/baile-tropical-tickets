@@ -222,6 +222,13 @@ function ParticipantCard({
         error={p.cpf && !isValidCPF(p.cpf) ? "CPF inválido" : ""}
       />
 
+      <Input
+        label="E-mail"
+        type="email"
+        value={p.email}
+        onChange={(v) => onChange({ email: v })}
+        error={p.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email.trim()) ? "E-mail inválido" : ""}
+      />
       <Input label="WhatsApp" value={p.phone} onChange={(v) => onChange({ phone: maskPhone(v) })} />
       <Input label="Data de nascimento" type="date" value={p.birthdate} onChange={(v) => onChange({ birthdate: v })} />
 
