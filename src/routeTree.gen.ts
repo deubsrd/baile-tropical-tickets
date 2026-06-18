@@ -9,6 +9,8 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
 import { Route as ConfirmacaoRouteImport } from './routes/confirmacao'
 import { Route as ComprarRouteImport } from './routes/comprar'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -17,6 +19,16 @@ import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ApiPublicWebhookInfinitypayRouteImport } from './routes/api/public/webhook-infinitypay'
 
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConfirmacaoRoute = ConfirmacaoRouteImport.update({
   id: '/confirmacao',
   path: '/confirmacao',
@@ -57,6 +69,8 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRoute
   '/confirmacao': typeof ConfirmacaoRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/public/webhook-infinitypay': typeof ApiPublicWebhookInfinitypayRoute
@@ -65,6 +79,8 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/comprar': typeof ComprarRoute
   '/confirmacao': typeof ConfirmacaoRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/public/webhook-infinitypay': typeof ApiPublicWebhookInfinitypayRoute
@@ -75,6 +91,8 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/comprar': typeof ComprarRoute
   '/confirmacao': typeof ConfirmacaoRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/admin/login': typeof AdminLoginRoute
   '/api/public/webhook-infinitypay': typeof ApiPublicWebhookInfinitypayRoute
@@ -85,6 +103,8 @@ export interface FileRouteTypes {
     | '/'
     | '/comprar'
     | '/confirmacao'
+    | '/recuperar-senha'
+    | '/reset-password'
     | '/admin'
     | '/admin/login'
     | '/api/public/webhook-infinitypay'
@@ -93,6 +113,8 @@ export interface FileRouteTypes {
     | '/'
     | '/comprar'
     | '/confirmacao'
+    | '/recuperar-senha'
+    | '/reset-password'
     | '/admin'
     | '/admin/login'
     | '/api/public/webhook-infinitypay'
@@ -102,6 +124,8 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/comprar'
     | '/confirmacao'
+    | '/recuperar-senha'
+    | '/reset-password'
     | '/_authenticated/admin'
     | '/admin/login'
     | '/api/public/webhook-infinitypay'
@@ -112,12 +136,28 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   ComprarRoute: typeof ComprarRoute
   ConfirmacaoRoute: typeof ConfirmacaoRoute
+  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   AdminLoginRoute: typeof AdminLoginRoute
   ApiPublicWebhookInfinitypayRoute: typeof ApiPublicWebhookInfinitypayRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/confirmacao': {
       id: '/confirmacao'
       path: '/confirmacao'
@@ -186,6 +226,8 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   ComprarRoute: ComprarRoute,
   ConfirmacaoRoute: ConfirmacaoRoute,
+  RecuperarSenhaRoute: RecuperarSenhaRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   AdminLoginRoute: AdminLoginRoute,
   ApiPublicWebhookInfinitypayRoute: ApiPublicWebhookInfinitypayRoute,
 }
