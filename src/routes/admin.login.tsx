@@ -58,6 +58,13 @@ function AdminLogin() {
         <button disabled={loading} className="w-full bg-gradient-tropical text-tropical-foreground py-3 rounded-xl font-display tracking-wider">
           {loading ? "..." : mode === "login" ? "ENTRAR" : "CADASTRAR"}
         </button>
+        {mode === "login" && (
+          <div className="text-center">
+            <Link to="/recuperar-senha" className="text-sand text-sm underline">
+              Esqueceu a senha?
+            </Link>
+          </div>
+        )}
         <button type="button" onClick={() => setMode(mode === "login" ? "signup" : "login")} className="w-full text-sand text-sm underline">
           {mode === "login" ? "Não tem conta? Cadastre-se" : "Já tem conta? Entrar"}
         </button>
